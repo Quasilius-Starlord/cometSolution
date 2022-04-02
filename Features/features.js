@@ -32,6 +32,7 @@ exports.signup=async (name, email, password, role)=>{
             name:name,
             email:email,
             password:passwordHash.generate(password),
+            admin:role
         };
 
         if(role)

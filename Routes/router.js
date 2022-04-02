@@ -9,6 +9,11 @@ const requestINT=require('request');
 
 const features=require('./../Features/features')
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 module.exports = () => {
 
@@ -294,6 +299,79 @@ module.exports = () => {
             console.log(err)
         }
         response.json({});
+    });
+
+    router.post('/submit',features.authenticate,(request, response)=>{
+        
+        const submissionData = {
+            problemId: request.body.problemid,
+            compilerId: request.body.compilerid,
+            source: request.body.source
+        };
+
+        requestINT({
+            url: `https://${process.env.PROBLEMS_END_POINT}/api/v4/submissions?access_token=${process.env.PROBLEMS_TOKEN}`,
+            method: 'POST',
+            form: submissionData
+        },async function (error, res, body) {
+            
+            if (error) {
+                console.log('Connection problem');
+            }
+            
+            // process response
+            if (res) {
+                if (res.statusCode === 201) {
+                    try {
+                        const data=JSON.parse(res.body)
+                        console.log(data); // submission data in JSON
+                        await sleep(3500);
+
+                        requestINT({
+                            url: `https://${process.env.PROBLEMS_END_POINT}/api/v4/submissions/${data.id}?access_token=${process.env.PROBLEMS_TOKEN}`,
+                            method: 'GET'
+                        }, function (error, res, body) {
+                            
+                            if (error) {
+                                console.log('Connection problem');
+                            }
+                            
+                            // process response
+                            if (res) {
+                                if (res.statusCode === 200) {
+                                    const result=JSON.parse(res.body)
+                                    console.log(result); // submission data in JSON
+                                    
+                                    response.json(result.result.status)
+                                } else {
+                                    if (res.statusCode === 401) {
+                                        console.log('Invalid access token');
+                                    } else if (res.statusCode === 403) {
+                                        console.log('Access denied');
+                                    } else if (res.statusCode === 404) {
+                                        console.log('Submision not found');
+                                    }
+                                }
+                            }
+                        });
+
+                    } catch (error) {
+                        console.log(err);
+                    }
+                } else {
+                    if (res.statusCode === 401) {
+                        console.log('Invalid access token');
+                    } else if (res.statusCode === 402) {
+                        console.log('Unable to create submission');
+                    } else if (res.statusCode === 400) {
+                        var body = JSON.parse(res.body);
+                        console.log('Error code: ' + body.error_code + ', details available in the message: ' + body.message)
+                    }
+                }
+            }
+        });
+
+        return;
     })
 
     router.get('/',features.authenticate,(request,response)=>{
