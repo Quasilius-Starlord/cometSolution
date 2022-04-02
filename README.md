@@ -1,6 +1,6 @@
 # cometbackend
 npm install
-
+heroku link: https://comet-intern.herokuapp.com/
 ![alt text](https://github.com/Quasilius-Starlord/cometSolution/blob/main/ss/Screenshot(510).png?raw=true)
 ![alt text](https://github.com/Quasilius-Starlord/cometSolution/blob/main/ss/Screenshot(511).png?raw=true)
 ![alt text](https://github.com/Quasilius-Starlord/cometSolution/blob/main/ss/Screenshot(512).png?raw=true)
