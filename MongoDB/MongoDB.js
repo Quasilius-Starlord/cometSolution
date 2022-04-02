@@ -5,7 +5,7 @@ class MongoDB{
     constructor(){
         this.url=`${process.env.MONGO_URI}`;
         this.client = null;
-        this.databaseName = 'Comed';
+        this.databaseName = 'Comet';
         this.userCollection = 'Users';
         this.questionsCollection = 'Questions';
     }
