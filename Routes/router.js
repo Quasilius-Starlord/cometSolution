@@ -54,8 +54,6 @@ module.exports = () => {
         }
     }
 
-    router.use((request, response, next)=>{next()})
-
     router.post('/add',features.authenticate, differentiate, async (request, response)=>{
         try{
             const questionData={
@@ -373,11 +371,6 @@ module.exports = () => {
 
         return;
     })
-
-    router.get('/',features.authenticate,(request,response)=>{
-        response.send('REXrt')
-    })
-
 
     return router;
 }
